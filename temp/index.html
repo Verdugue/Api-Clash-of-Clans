@@ -1,0 +1,36 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html>
+<head>
+    <title> API </title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../static/css/index.css">
+</head>
+<header class="header-container">
+
+</header>
+<body>
+    <div class="father-container">
+        <form class="generate" action="/" method="get">
+            <button class="genrate-style" type="submit"><img class="fleche" src="../static/img/fleche.png" alt="fleche" />Générer 20 nouveaux Pokémon</button>
+        </form>
+        <section id="pokemon-container">
+            {{ range . }}
+            <div class="pokemon-card">
+                <div class="pokemon-image">
+                    <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
+                </div>
+                <div class="pokemon-name">{{.Name}}</div>
+                <div class="pokemon-type">
+                    {{range .Type}}
+                    <img src="../static/img/{{.Type}}.png" class="image-pokemon
+                    <button type="button" class="type-link"><a class="typepokemon" href="https://pokemon.fandom.com/wiki/{{.}}_type">{{.}}</a></button>
+                    {{end}}
+                </div>
+            </div>
+            {{ end }}
+        </section>
+    </div>
+</body>
+</html>
+{{end}}
