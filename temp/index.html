@@ -12,7 +12,10 @@
 <body>
     <div class="father-container">
         <form class="generate" action="/" method="get">
-            <button class="genrate-style" type="submit"><img class="fleche" src="../static/img/fleche.png" alt="fleche" />Générer 20 nouveaux Pokémon</button>
+            <button class="genrate-style" type="submit">
+                <img class="fleche" src="../static/img/fleche.png" alt="fleche" />
+                Générer 20 nouveaux Pokémon
+            </button>
         </form>
         <section id="pokemon-container">
             {{ range . }}
@@ -23,14 +26,16 @@
                 <div class="pokemon-name">{{.Name}}</div>
                 <div class="pokemon-type">
                     {{range .Type}}
-                    <img src="../static/img/{{.Type}}.png" class="image-pokemon
-                    <button type="button" class="type-link"><a class="typepokemon" href="https://pokemon.fandom.com/wiki/{{.}}_type">{{.}}</a></button>
+                    <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
+                    <img src="../static/img/{{.Type}}.png" class="image-pokemon" alt="{{.}} type">
+                    <a class="typepokemon" href="https://pokemon.fandom.com/wiki/{{.}}_type">{{.}}</a>
                     {{end}}
                 </div>
             </div>
-            {{ end }}
+            {{end}}
         </section>
     </div>
+    >
 </body>
 </html>
 {{end}}
