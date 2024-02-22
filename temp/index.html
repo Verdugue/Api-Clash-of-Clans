@@ -1,41 +1,57 @@
-{{define "index"}}
-<!DOCTYPE html>
-<html>
-<head>
-    <title> API </title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="../static/css/index.css">
-</head>
-<header class="header-container">
-
-</header>
-<body>
-    <div class="father-container">
-        <form class="generate" action="/" method="get">
-            <button class="genrate-style" type="submit">
-                <img class="fleche" src="../static/img/fleche.png" alt="fleche" />
-                Générer 20 nouveaux Pokémon
-            </button>
-        </form>
-        <section id="pokemon-container">
-            {{ range . }}
-            <div class="pokemon-card">
-                <div class="pokemon-image">
-                    <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
-                </div>
-                <div class="pokemon-name">{{.Name}}</div>
-                <div class="pokemon-type">
-                    {{range .Type}}
-                    <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
-                    <img src="../static/img/{{.Type}}.png" class="image-pokemon" alt="{{.}} type">
-                    <a class="typepokemon" href="https://pokemon.fandom.com/wiki/{{.}}_type">{{.}}</a>
-                    {{end}}
-                </div>
+    {{define "index"}}
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title> API </title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="../static/css/index.css">
+    </head>
+    <header class="header-container">
+        <div class="header-left">
+            <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+        </div>
+        <div class="header-middle">
+            <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+        </div>
+        <div class="header-right">
+            <div class="search">
+                <form action="/search" method="get" class="search-form">
+                    <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                    <button type="submit" class="searchButton">
+                        <img class="pokesearch" src="../static/img/pokesearch.png">
+                    </button>
+                </form>
             </div>
-            {{end}}
-        </section>
-    </div>
-    >
-</body>
-</html>
-{{end}}
+        </div>
+    </header>
+    <body>
+        <div class="father-container">
+            <form class="generate" action="/" method="get">
+                <div class="all-container">
+                        <button class="genrate-style" type="submit">
+                            <img class="fleche" src="../static/img/fleche.png" alt="fleche" />
+                            Générer 20 nouveaux Pokémon
+                        </button>
+                    </form>
+                    <section id="pokemon-container">
+                        {{ range . }}
+                        <div class="pokemon-card">
+                            <div class="pokemon-image">
+                                <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
+                            </div>
+                            <div class="pokemon-name">{{.Name}}</div>
+                            <div class="pokemon-type">
+                                {{range .Type}}
+                                <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
+                            <a> <img class="type"src="../static/img/{{.}}.png" href="https://pokemon.fandom.com/wiki/{{.}}_type" class="image-pokemon" alt="{{.}} type"></a>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{ end }}
+                    </section>
+                </div>
+        </div>
+    </body>
+
+    </html>
+    {{end}}

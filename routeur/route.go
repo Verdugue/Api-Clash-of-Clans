@@ -9,6 +9,7 @@ import (
 
 func InitRoute() {
 	http.HandleFunc("/", controller.Index)
+	http.HandleFunc("/search", controller.SearchPokemon)
 
 	rootDoc, _ := os.Getwd()
 	fileserver := http.FileServer(http.Dir(rootDoc + "/assets"))

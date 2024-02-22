@@ -1,0 +1,47 @@
+{{define "search"}}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Résultat de la recherche</title>
+    <link rel="stylesheet" href="../static/css/index.css">
+    <!-- ... -->
+</head>
+<header class="header-container">
+    <div class="header-left">
+        <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+    </div>
+    <div class="header-middle">
+        <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+    </div>
+    <div class="header-right">
+        <div class="search">
+            <form action="/search" method="get" class="search-form">
+                <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                <button type="submit" class="searchButton">
+                    <img class="pokesearch" src="../static/img/pokesearch.png">
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+<body>
+    <div class="father-container">
+        <!-- ... Barre de recherche identique à la page d'accueil ... -->
+        <section id="pokemon-container">
+            <!-- Supposons que . soit un Pokémon unique trouvé lors de la recherche -->
+            <div class="pokemon-card">
+                <div class="pokemon-image">
+                    <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
+                </div>
+                <div class="pokemon-name">{{.Name}}</div>
+                <div class="pokemon-type">
+                    {{range .Type}}
+                        <a> <img class="type" src="../static/img/{{.}}.png" href="https://pokemon.fandom.com/wiki/{{.}}_type" alt="{{.}} type"></a>
+                    {{end}}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>   
+</html>
+{{end}}

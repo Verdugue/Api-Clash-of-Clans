@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	InitTemp "pokemon/temp"
+	"strings"
 	"time"
 )
 
@@ -30,6 +31,10 @@ type Season struct {
 	MAINCHARACTER    string `json:"MAINCHARTER"`
 	LEAGUES          string `json:"LEAGUES"`
 	LEGENDARYPOKEMON string `json:"LEGENDARYPOKEMON"`
+}
+
+func ToLower(str string) string {
+	return strings.ToLower(str)
 }
 
 // Supposons que cette fonction envoie une requête à l'API et récupère 20 Pokémon aléatoires
@@ -100,11 +105,41 @@ func FetchPokemonDetails(pokemonURL string) (name string, types []string, imageU
 func Index(w http.ResponseWriter, r *http.Request) {
 	pokemons, err := GetRandomPokemons()
 	if err != nil {
-		// Gérez l'erreur, par exemple en renvoyant une erreur 500
 		http.Error(w, "Erreur lors de la récupération des Pokémon", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(pokemons)
+	fmt.Printf("Nombre de Pokémons récupérés : %d\n", len(pokemons))
 	// Passez les Pokémon au template
 	InitTemp.Temp.ExecuteTemplate(w, "index", pokemons)
+}
+
+func SearchPokemon(w http.ResponseWriter, r *http.Request) {
+	// Extrait le terme de recherche de la requête
+	searchQuery := r.URL.Query().Get("query")
+	searchQuery = ToLower(searchQuery)
+	if searchQuery == "" {
+		http.Error(w, "Vous devez fournir un terme de recherche", http.StatusBadRequest)
+		return
+	}
+
+	// Utilisez searchQuery pour faire une requête à l'API et obtenir des données sur le Pokémon
+	pokemonURL := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", searchQuery)
+	name, types, image, err := FetchPokemonDetails(pokemonURL)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Erreur lors de la récupération des détails de Pokémon: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Créez votre structure de réponse basée sur les données récupérées
+	pokemon := Pokemon{
+		Name:  name,
+		Type:  types,
+		Image: image,
+	}
+
+	// Affichez les résultats à l'aide de votre template ou retournez-les en JSON
+	// Par exemple, si vous voulez juste afficher le nom du Pokémon recherché:
+	// Ou si vous utilisez un template :
+	InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
+	// InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
 }
