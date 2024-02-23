@@ -3,12 +3,15 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	InitTemp "pokemon/temp"
 	"strings"
 	"time"
 )
+
+var AllPokemonTypes []string
 
 type Pokemon struct {
 	Name  string   `json:"name"`
@@ -37,6 +40,35 @@ func ToLower(str string) string {
 	return strings.ToLower(str)
 }
 
+func init() {
+	// Initialisation de AllPokemonTypes au démarrage de l'application.
+	FetchPokemonTypes()
+}
+
+func FetchPokemonTypes() {
+	// Effectuez la requête à l'API pour récupérer les types de Pokémon.
+	resp, err := http.Get("https://pokeapi.co/api/v2/type/")
+	if err != nil {
+		log.Fatalf("Erreur lors de la récupération des types de Pokémon : %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Parsez la réponse JSON.
+	var data struct {
+		Results []struct {
+			Name string `json:"name"`
+		} `json:"results"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		log.Fatalf("Erreur lors du décodage de la réponse JSON: %v", err)
+	}
+
+	// Remplissez AllPokemonTypes avec les noms des types de Pokémon.
+	for _, t := range data.Results {
+		AllPokemonTypes = append(AllPokemonTypes, t.Name)
+	}
+}
+
 // Supposons que cette fonction envoie une requête à l'API et récupère 20 Pokémon aléatoires
 func GetRandomPokemons() ([]Pokemon, error) {
 	rand.Seed(time.Now().UnixNano()) // Initialise le générateur de nombres aléatoires
@@ -61,6 +93,37 @@ func GetRandomPokemons() ([]Pokemon, error) {
 			Image: image,
 		}
 		pokemons = append(pokemons, pokemon)
+	}
+
+	return pokemons, nil
+}
+
+func FetchPokemonsForType(typeName string) ([]Pokemon, error) {
+	url := fmt.Sprintf("https://pokeapi.co/api/v2/type/%s", typeName)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Printf("Error fetching type %s: %v", typeName, err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Pokemon []struct {
+			Pokemon struct {
+				Name string `json:"name"`
+				URL  string `json:"url"`
+			} `json:"pokemon"`
+		} `json:"pokemon"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	var pokemons []Pokemon
+	for _, p := range result.Pokemon {
+		// Optionnellement, récupérez plus de détails ici avec FetchPokemonDetails
+		pokemons = append(pokemons, Pokemon{Name: p.Pokemon.Name})
 	}
 
 	return pokemons, nil
@@ -142,4 +205,43 @@ func SearchPokemon(w http.ResponseWriter, r *http.Request) {
 	// Ou si vous utilisez un template :
 	InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
 	// InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
+}
+
+func FilterPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method Not Allowed", 405)
+		return
+	}
+	InitTemp.Temp.ExecuteTemplate(w, "filter", map[string]interface{}{
+		"Types": AllPokemonTypes,
+	})
+}
+
+func ApplyFilterHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method Not Allowed", 405)
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Invalid form data", 400)
+		return
+	}
+
+	selectedTypes := r.Form["types"]
+	var filteredPokemons []Pokemon
+
+	for _, typeName := range selectedTypes {
+		pokemons, err := FetchPokemonsForType(typeName)
+		if err != nil {
+			log.Printf("Error fetching pokemons for type %s: %v", typeName, err)
+			continue
+		}
+		filteredPokemons = append(filteredPokemons, pokemons...)
+	}
+
+	// Affichez les résultats
+	InitTemp.Temp.ExecuteTemplate(w, "filter", map[string]interface{}{
+		"Types":    AllPokemonTypes,  // Assurez-vous que cette liste est toujours passée pour reconstruire le formulaire
+		"Pokemons": filteredPokemons, // Les Pokémon filtrés à afficher
+	})
 }

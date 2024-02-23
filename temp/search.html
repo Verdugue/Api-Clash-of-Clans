@@ -36,7 +36,7 @@
                 <div class="pokemon-name">{{.Name}}</div>
                 <div class="pokemon-type">
                     {{range .Type}}
-                        <a> <img class="type" src="../static/img/{{.}}.png" href="https://pokemon.fandom.com/wiki/{{.}}_type" alt="{{.}} type"></a>
+                    <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
                     {{end}}
                 </div>
             </div>

@@ -10,6 +10,8 @@ import (
 func InitRoute() {
 	http.HandleFunc("/", controller.Index)
 	http.HandleFunc("/search", controller.SearchPokemon)
+	http.HandleFunc("/filter", controller.FilterPageHandler) // Pour afficher la page de filtrage
+	http.HandleFunc("/apply-filter", controller.ApplyFilterHandler)
 
 	rootDoc, _ := os.Getwd()
 	fileserver := http.FileServer(http.Dir(rootDoc + "/assets"))

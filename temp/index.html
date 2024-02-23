@@ -43,7 +43,7 @@
                             <div class="pokemon-type">
                                 {{range .Type}}
                                 <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
-                            <a> <img class="type"src="../static/img/{{.}}.png" href="https://pokemon.fandom.com/wiki/{{.}}_type" class="image-pokemon" alt="{{.}} type"></a>
+                            <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
                                 {{end}}
                             </div>
                         </div>
@@ -51,7 +51,10 @@
                     </section>
                 </div>
         </div>
-    </body>
+    <footer  class="footer-container">
+        
 
-    </html>
-    {{end}}
+    </footer>
+</body>
+</html>
+{{end}}
