@@ -28,6 +28,9 @@
     <div class="father-container">
         <!-- ... Barre de recherche identique à la page d'accueil ... -->
         <section id="pokemon-container">
+            {{if .ErrorMessage}}
+                <div class="error-message">{{.ErrorMessage}}</div>
+            {{else}}
             <!-- Supposons que . soit un Pokémon unique trouvé lors de la recherche -->
             <div class="pokemon-card">
                 <div class="pokemon-image">
@@ -40,6 +43,7 @@
                     {{end}}
                 </div>
             </div>
+            {{end}}
         </section>
     </div>
 </body>   

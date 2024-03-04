@@ -189,22 +189,25 @@ func SearchPokemon(w http.ResponseWriter, r *http.Request) {
 	pokemonURL := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", searchQuery)
 	name, types, image, err := FetchPokemonDetails(pokemonURL)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Erreur lors de la récupération des détails de Pokémon: %v", err), http.StatusInternalServerError)
+		// Si l'erreur est due à un Pokémon non trouvé (par exemple, erreur 404), affichez un message spécifique
+		if strings.Contains(err.Error(), "404") {
+			// Affichez le template avec un message indiquant qu'aucun Pokémon n'a été trouvé
+			InitTemp.Temp.ExecuteTemplate(w, "search", map[string]string{
+				"ErrorMessage": "Aucun Pokémon trouvé",
+			})
+		} else {
+			http.Error(w, fmt.Sprintf("Erreur lors de la récupération des détails de Pokémon: %v", err), http.StatusInternalServerError)
+		}
 		return
 	}
 
-	// Créez votre structure de réponse basée sur les données récupérées
+	// Si un Pokémon est trouvé, continuez comme d'habitude
 	pokemon := Pokemon{
 		Name:  name,
 		Type:  types,
 		Image: image,
 	}
-
-	// Affichez les résultats à l'aide de votre template ou retournez-les en JSON
-	// Par exemple, si vous voulez juste afficher le nom du Pokémon recherché:
-	// Ou si vous utilisez un template :
 	InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
-	// InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
 }
 
 func FilterPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -244,4 +247,31 @@ func ApplyFilterHandler(w http.ResponseWriter, r *http.Request) {
 		"Types":    AllPokemonTypes,  // Assurez-vous que cette liste est toujours passée pour reconstruire le formulaire
 		"Pokemons": filteredPokemons, // Les Pokémon filtrés à afficher
 	})
+}
+
+func FilterPokemonParType(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Erreur lors du parsing du formulaire", http.StatusBadRequest)
+		return
+	}
+
+	selectedTypes := r.Form["types"]
+	var filteredPokemons []Pokemon
+
+	for _, typeName := range selectedTypes {
+		pokemons, err := FetchPokemonsForType(typeName)
+		if err != nil {
+			log.Printf("Erreur lors de la récupération des pokémons pour le type %s: %v", typeName, err)
+			continue // Passe au type suivant en cas d'erreur
+		}
+		filteredPokemons = append(filteredPokemons, pokemons...)
+	}
+
+	// Envoyez `filteredPokemons` à votre template HTML ici pour afficher les résultats
+	InitTemp.Temp.ExecuteTemplate(w, "filtrer", filteredPokemons)
 }

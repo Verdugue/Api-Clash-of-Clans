@@ -1,0 +1,24 @@
+{{define "filtrer"}}
+<!DOCTYPE html>
+<body>
+    <div class="father-container">
+        <!-- Formulaire de filtrage -->
+        <form action="/filterPokemonParType" method="post" class="filter-form">
+            <h2 class="filter-title">Filtrer par Type de Pokémon</h2>
+            <div class="filter-options">
+                {{range .Types}}
+                <label class="filter-option">
+                    <input type="checkbox" name="types" value="{{.}}"> {{.}}
+                </label>
+                {{end}}
+            </div>
+            <button type="submit" class="filter-submit">Appliquer le Filtre</button>
+        </form>
+        <!-- La section existante pour afficher les Pokémon -->
+        <section id="pokemon-container">
+            <!-- Les Pokémon s'affichent ici -->
+        </section>
+    </div>
+</body>
+<html>
+{{end}}
