@@ -36,26 +36,30 @@
                     <button href="/filtrer">Filtrer</button>
                     <section id="pokemon-container">
                         {{ range . }}
-                        <div class="pokemon-card">
-                            <div class="pokemon-image">
-                                <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
-                            </div>
-                            <div class="pokemon-name">{{.Name}}</div>
-                            <div class="pokemon-type">
-                                {{range .Type}}
-                                <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
-                            <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
-                                {{end}}
-                            </div>
+                        <div>
+                            <a href="/pokemon/{{.Name}}" class="pokemon-card-link">
+                                <div class="pokemon-card">
+                                    <div class="pokemon-image">
+                                        <img src="{{.Image}}" alt="image de {{.Name}}" class="image-pokemon">
+                                    </div>
+                                    <div class="pokemon-name">{{.Name}}</div>
+                                    <div class="pokemon-type">
+                                        {{range .Type}}
+                                        <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
+                                        {{end}}
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                        {{ end }}
+                    {{ end }}
                     </section>
                 </div>
         </div>
+        
     <footer  class="footer-container">
         
 
     </footer>
-</body>
+
 </html>
 {{end}}

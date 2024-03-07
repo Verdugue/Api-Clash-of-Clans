@@ -7,6 +7,7 @@ body {
   margin-left:-10px;
   height:100%;
   margin-right:-1px;
+  background-color: red;
   
 }
 html {
@@ -89,6 +90,14 @@ font-size:20px;
   
 }
 
+.pokemon-card-link {
+  display: inline-block; /* ou block si vous voulez que le lien occupe toute la largeur */
+  margin: 10px; /* ajustez l'espacement selon vos besoins */
+  text-decoration: none; /* enlève le soulignement des liens */
+  color: inherit; /* le texte prend la couleur par défaut ou celle spécifiée */
+  /* ajoutez des styles supplémentaires si nécessaire */
+}
+
 .genrate-style:hover {
 background-color:#dddddd;
 }
@@ -112,10 +121,11 @@ background-color:#FFCB09;
   color: black; /* Couleur du texte pour les types */
 }
 
-.image-pokemon2 {
-  width:120px;
+.image-pokemon {
+  width:100px;
   
 }
+
 
 .fleche {
   width:22px;
@@ -270,4 +280,9 @@ margin-right:1px;
 .submit-types{
 justify-content:center;
 
+}
+
+.image-pokemon2 {
+  width:100px;
+  
 }

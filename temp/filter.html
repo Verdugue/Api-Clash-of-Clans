@@ -1,0 +1,74 @@
+    {{define "filter"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filtrage Pokémon</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body>
+    <header class="header-container">
+        <div class="header-left">
+            <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+        </div>
+        <div class="header-middle">
+            <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+        </div>
+        <div class="header-right">
+            <div class="search">
+                <form action="/search" method="get" class="search-form">
+                    <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                    <button type="submit" class="searchButton">
+                        <img class="pokesearch" src="../static/img/pokesearch.png">
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div id="container-type">
+        <form action="/apply-filter" method="post">
+            <div class="types-container-choix">
+                {{range .Types}}
+                <div class="checkbox-types">
+                    <input type="checkbox" name="types" value="{{.}}">
+                    <label for="type-{{.}}">{{.}}</label>
+                </div>
+            {{end}}
+            </div>
+            <div class="submit-types">
+                <button type="submit">Filtrer</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section pour afficher les résultats des Pokémon filtrés -->
+    <section id="pokemon-container">
+        {{if .Pokemons}}
+        <div class="all-container">
+            {{range .Pokemons}}
+            <div class="pokemon-card">
+                <div class="pokemon-image">
+                    <img src="{{.Image}}" class="image-pokemon2" alt="image de {{.Name}}">
+                </div>
+                <div class="pokemon-name">{{.Name}}</div>
+                <div class="pokemon-type">
+                    {{range .Type}}
+                    <!-- L'attribut src doit correspondre à votre structure de fichier et nom de fichier pour les images de type -->
+                    <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{else}}
+        <!-- Ce paragraphe s'affiche si aucun Pokémon n'est passé au template ou si la liste est vide -->
+        <p>Aucun Pokémon à afficher. Veuillez sélectionner des types et cliquer sur Filtrer.</p>
+        {{end}}
+    </section>
+
+    <footer  class="footer-container">
+    </footer>
+</body>
+</html>
+{{end}}

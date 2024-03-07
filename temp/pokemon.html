@@ -1,0 +1,57 @@
+ {{define "pokemon"}}
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../static/css/detail.css">
+</head>
+<header class="header-container">
+    <div class="header-left">
+        <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+    </div>
+    <div class="header-middle">
+        <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+    </div>
+    <div class="header-right">
+        <div class="search">
+            <form action="/search" method="get" class="search-form">
+                <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                <button type="submit" class="searchButton">
+                    <img class="pokesearch" src="../static/img/pokesearch.png">
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+<body>
+    <div class="all">
+        <div class="right-container-detail">
+                <div class="image-pokemon">
+                    <img src="{{.Image}}" alt="image de {{.Name}}">
+                </div>
+        </div>
+        <div class="left-container-detail">
+            <div class="father-information">
+                <div class="title">
+                    <div class="title-id">
+                        No. {{.ID}}
+                    </div>
+                    
+                    <p class="name-pokemon">{{.Name}}</p>
+                    
+                </div>
+                <p class="type-title">Types</h3>
+                <div class="pokemon-type">
+                    {{range .Type}}
+                        <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+
+<html>
+ {{end}}
