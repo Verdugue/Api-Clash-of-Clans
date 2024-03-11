@@ -14,12 +14,17 @@ import (
 var AllPokemonTypes []string
 
 type Pokemon struct {
-	Abilities []string `json:"abilities"`
-	ID        int      `json:"id"`
-	Name      string   `json:"name"`
-	URL       string   `json:"url"`   // Ajouté pour stocker l'URL de détail
-	Type      []string `json:"types"` // Ceci sera rempli après une requête supplémentaire
-	Image     string   `json:"image"` // Ceci sera rempli après une requête supplémentaire
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	URL       string    `json:"url"`
+	Type      []string  `json:"types"`
+	Image     string    `json:"image"`
+	Abilities []Ability `json:"abilities"` // Nouveau champ pour les capacités
+}
+
+type Ability struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
 }
 
 type ApiResponse struct {
@@ -82,18 +87,20 @@ func GetRandomPokemons() ([]Pokemon, error) {
 		pokemonID := rand.Intn(898) + 1
 		pokemonURL := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%d", pokemonID)
 
-		// La fonction FetchPokemonDetails est modifiée pour retourner également le nom du Pokémon.
-		id, name, types, image, err := FetchPokemonDetails(pokemonURL)
+		// La fonction FetchPokemonDetails est modifiée pour retourner le nom, types, abilities, et l'image du Pokémon.
+		id, name, types, abilities, image, err := FetchPokemonDetails(pokemonURL)
 		if err != nil {
-			return nil, err
+			log.Printf("Failed to fetch Pokemon details for ID %d: %v", pokemonID, err)
+			continue // Continue to the next iteration if an error occurs
 		}
 
 		// Crée un nouvel objet Pokémon avec les détails récupérés et l'ajoute à la liste
 		pokemon := Pokemon{
-			ID:    id, // Use the real ID of the Pokemon returned by FetchPokemonDetails
-			Name:  name,
-			Type:  types,
-			Image: image,
+			ID:        id,
+			Name:      name,
+			Type:      types,
+			Abilities: abilities, // Assurez-vous d'ajouter les capacités ici
+			Image:     image,
 		}
 		pokemons = append(pokemons, pokemon)
 	}
@@ -131,16 +138,24 @@ func FetchPokemonsForType(typeName string) ([]Pokemon, error) {
 
 	return pokemons, nil
 }
-func FetchPokemonDetails(pokemonURL string) (id int, name string, types []string, abilities []string, err error) {
+
+func FetchPokemonDetails(pokemonURL string) (id int, name string, types []string, abilities []Ability, image string, err error) {
 	resp, err := http.Get(pokemonURL)
 	if err != nil {
-		return 0, "", nil, nil, err
+		return 0, "", nil, nil, "", err
 	}
 	defer resp.Body.Close()
 
 	var detailResp struct {
-		ID    int    `json:"id"`
-		Name  string `json:"name"`
+		ID      int    `json:"id"`
+		Name    string `json:"name"`
+		Sprites struct {
+			Other struct {
+				OfficialArtwork struct {
+					FrontDefault string `json:"front_default"`
+				} `json:"official-artwork"`
+			} `json:"other"`
+		} `json:"sprites"`
 		Types []struct {
 			Type struct {
 				Name string `json:"name"`
@@ -149,25 +164,33 @@ func FetchPokemonDetails(pokemonURL string) (id int, name string, types []string
 		Abilities []struct {
 			Ability struct {
 				Name string `json:"name"`
+				URL  string `json:"url"`
 			} `json:"ability"`
 		} `json:"abilities"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&detailResp); err != nil {
-		return 0, "", nil, nil, err
+		return 0, "", nil, nil, "", err
 	}
 
 	id = detailResp.ID
 	name = detailResp.Name
+	image = detailResp.Sprites.Other.OfficialArtwork.FrontDefault
+
 	for _, t := range detailResp.Types {
 		types = append(types, t.Type.Name)
 	}
-	for _, ab := range detailResp.Abilities {
-		abilities = append(abilities, ab.Ability.Name)
+
+	for _, a := range detailResp.Abilities {
+		abilities = append(abilities, Ability{
+			Name: a.Ability.Name,
+			URL:  a.Ability.URL,
+		})
 	}
 
-	return id, name, types, abilities, nil
+	return id, name, types, abilities, image, nil
 }
+
 func Index(w http.ResponseWriter, r *http.Request) {
 	pokemons, err := GetRandomPokemons()
 	if err != nil {
@@ -190,7 +213,7 @@ func SearchPokemon(w http.ResponseWriter, r *http.Request) {
 
 	// Utilisez searchQuery pour faire une requête à l'API et obtenir des données sur le Pokémon
 	pokemonURL := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", searchQuery)
-	abilities, id, name, types, image, err := FetchPokemonDetails(pokemonURL)
+	id, name, types, abilities, image, err := FetchPokemonDetails(pokemonURL) // Modifié pour inclure les abilities
 	if err != nil {
 		log.Printf("Failed to fetch details for %s: %v", searchQuery, err) // Add logging here
 		if strings.Contains(err.Error(), "404") {
@@ -205,10 +228,10 @@ func SearchPokemon(w http.ResponseWriter, r *http.Request) {
 
 	// Si un Pokémon est trouvé, continuez comme d'habitude
 	pokemon := Pokemon{
-		Abilities: abilities,
 		ID:        id,
 		Name:      name,
 		Type:      types,
+		Abilities: abilities, // Assurez-vous d'inclure les abilities ici
 		Image:     image,
 	}
 
@@ -287,7 +310,7 @@ func PokemonDetailHandler(w http.ResponseWriter, r *http.Request) {
 	name := strings.TrimPrefix(r.URL.Path, "/pokemon/")
 
 	// Utilisez `FetchPokemonDetails` pour obtenir les détails du Pokémon
-	id, name, types, image, err := FetchPokemonDetails("https://pokeapi.co/api/v2/pokemon/" + name)
+	id, name, types, abilities, image, err := FetchPokemonDetails("https://pokeapi.co/api/v2/pokemon/" + name) // Ajouté abilities dans la récupération
 	if err != nil {
 		http.Error(w, "Pokémon non trouvé", http.StatusNotFound)
 		return
@@ -295,10 +318,11 @@ func PokemonDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Créez une instance de Pokémon avec les détails obtenus
 	pokemon := Pokemon{
-		ID:    id,
-		Name:  name,
-		Type:  types,
-		Image: image,
+		ID:        id,
+		Name:      name,
+		Type:      types,
+		Abilities: abilities, // Incluez les capacités ici
+		Image:     image,
 	}
 
 	// Passez le Pokémon au template de détail

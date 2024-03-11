@@ -17,6 +17,8 @@ height:100%;
 
 }
 
+
+
 header {
 background-color:#3466AF;
 height:150px;
@@ -25,6 +27,13 @@ margin-right:-0px;
 margin-left:-10px;
 
 
+}
+
+.pokemon-type {
+    display:flex;
+    justify-content:center;
+    justify-content:space-around;
+    
 }
 
 .search {
@@ -123,6 +132,10 @@ margin-right:100px;
     margin-top:5em;
     margin-left:15em;
     
+}
+
+.image {
+    width:350px;
 }
 
 .left-container-detail {

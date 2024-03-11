@@ -26,7 +26,7 @@
     <div class="all">
         <div class="right-container-detail">
                 <div class="image-pokemon">
-                    <img src="{{.Image}}" alt="image de {{.Name}}">
+                    <img class="image" src="{{.Image}}" alt="image de {{.Name}}">
                 </div>
         </div>
         <div class="left-container-detail">
@@ -39,11 +39,23 @@
                     <p class="name-pokemon">{{.Name}}</p>
                     
                 </div>
+                <div class="text">
                 <p class="type-title">Types</h3>
+                <p class="attaque-title">Attaques</p>
+                </div>
                 <div class="pokemon-type">
+                    <div class="les-types">
                     {{range .Type}}
                         <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
                     {{end}}
+                    </div>
+                    <select class="attack-list" name="abilities" id="abilities-dropdown">
+                        {{range .Abilities}}
+                            <option value="Attaques">Attaques</option>
+                            <option value="{{.Name}}">{{.Name}}</option>
+                        {{end}}
+                    </select>
+                    
                 </div>
             </div>
         </div>
