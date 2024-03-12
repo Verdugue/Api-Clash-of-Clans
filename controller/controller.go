@@ -14,12 +14,13 @@ import (
 var AllPokemonTypes []string
 
 type Pokemon struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	URL       string    `json:"url"`
-	Type      []string  `json:"types"`
-	Image     string    `json:"image"`
-	Abilities []Ability `json:"abilities"` // Nouveau champ pour les capacités
+	ID              int             `json:"id"`
+	Name            string          `json:"name"`
+	URL             string          `json:"url"`
+	Type            []string        `json:"types"`
+	Image           string          `json:"image"`
+	Abilities       []Ability       `json:"abilities"` // Nouveau champ pour les capacités
+	DamageRelations DamageRelations `json:"damage_relations"`
 }
 
 type Ability struct {
@@ -34,13 +35,18 @@ type ApiResponse struct {
 	Results  []Pokemon `json:"results"`
 }
 
-type Season struct {
-	ID               string `json:"ID"`
-	IMG              string `json:"IMG"`
-	NEWPOKEMON       string `json:"NEWPOKEMON"`
-	MAINCHARACTER    string `json:"MAINCHARTER"`
-	LEAGUES          string `json:"LEAGUES"`
-	LEGENDARYPOKEMON string `json:"LEGENDARYPOKEMON"`
+type DamageRelations struct {
+	DoubleDamageFrom []TypeRelation `json:"double_damage_from"`
+	DoubleDamageTo   []TypeRelation `json:"double_damage_to"`
+	HalfDamageFrom   []TypeRelation `json:"half_damage_from"`
+	HalfDamageTo     []TypeRelation `json:"half_damage_to"`
+	NoDamageFrom     []TypeRelation `json:"no_damage_from"`
+	NoDamageTo       []TypeRelation `json:"no_damage_to"`
+}
+
+type TypeRelation struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
 }
 
 func ToLower(str string) string {
@@ -239,72 +245,6 @@ func SearchPokemon(w http.ResponseWriter, r *http.Request) {
 	InitTemp.Temp.ExecuteTemplate(w, "search", pokemon)
 }
 
-func FilterPageHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method Not Allowed", 405)
-		return
-	}
-	InitTemp.Temp.ExecuteTemplate(w, "filter", map[string]interface{}{
-		"Types": AllPokemonTypes,
-	})
-}
-
-func ApplyFilterHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Method Not Allowed", 405)
-		return
-	}
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Invalid form data", 400)
-		return
-	}
-
-	selectedTypes := r.Form["types"]
-	var filteredPokemons []Pokemon
-
-	for _, typeName := range selectedTypes {
-		pokemons, err := FetchPokemonsForType(typeName)
-		if err != nil {
-			log.Printf("Error fetching pokemons for type %s: %v", typeName, err)
-			continue
-		}
-		filteredPokemons = append(filteredPokemons, pokemons...)
-	}
-
-	// Affichez les résultats
-	InitTemp.Temp.ExecuteTemplate(w, "filter", map[string]interface{}{
-		"Types":    AllPokemonTypes,  // Assurez-vous que cette liste est toujours passée pour reconstruire le formulaire
-		"Pokemons": filteredPokemons, // Les Pokémon filtrés à afficher
-	})
-}
-
-func FilterPokemonParType(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
-		return
-	}
-
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Erreur lors du parsing du formulaire", http.StatusBadRequest)
-		return
-	}
-
-	selectedTypes := r.Form["types"]
-	var filteredPokemons []Pokemon
-
-	for _, typeName := range selectedTypes {
-		pokemons, err := FetchPokemonsForType(typeName)
-		if err != nil {
-			log.Printf("Erreur lors de la récupération des pokémons pour le type %s: %v", typeName, err)
-			continue // Passe au type suivant en cas d'erreur
-		}
-		filteredPokemons = append(filteredPokemons, pokemons...)
-	}
-
-	// Envoyez `filteredPokemons` à votre template HTML ici pour afficher les résultats
-	InitTemp.Temp.ExecuteTemplate(w, "filtrer", filteredPokemons)
-}
-
 func PokemonDetailHandler(w http.ResponseWriter, r *http.Request) {
 	// Extrayez le nom du Pokémon de l'URL
 	name := strings.TrimPrefix(r.URL.Path, "/pokemon/")
@@ -315,16 +255,83 @@ func PokemonDetailHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Pokémon non trouvé", http.StatusNotFound)
 		return
 	}
+	if err != nil {
+		// Gérez l'erreur, peut-être en continuant sans les informations d'évolution
+		log.Printf("Erreur lors de la récupération des détails d'évolution: %v", err)
+	}
+
+	damageRelations, err := FetchTypeDamageRelations(types[0])
+	if err != nil {
+		log.Printf("Erreur lors de la récupération des relations de dommages pour le type %s: %v", types[0], err)
+		// Vous pouvez soit ignorer cette erreur soit retourner une erreur HTTP
+	}
 
 	// Créez une instance de Pokémon avec les détails obtenus
 	pokemon := Pokemon{
-		ID:        id,
-		Name:      name,
-		Type:      types,
-		Abilities: abilities, // Incluez les capacités ici
-		Image:     image,
+		ID:              id,
+		Name:            name,
+		Type:            types,
+		Abilities:       abilities, // Incluez les capacités ici
+		Image:           image,
+		DamageRelations: damageRelations,
 	}
 
 	// Passez le Pokémon au template de détail
 	InitTemp.Temp.ExecuteTemplate(w, "pokemon", pokemon)
+}
+
+func FetchEvolutionDetails(evolutionChainID int) (evolutions []string, err error) {
+	url := fmt.Sprintf("https://pokeapi.co/api/v2/evolution-chain/%d/", evolutionChainID)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var data struct {
+		Chain struct {
+			EvolvesTo []struct {
+				Species struct {
+					Name string `json:"name"`
+				} `json:"species"`
+				EvolvesTo []struct {
+					Species struct {
+						Name string `json:"name"`
+					} `json:"species"`
+				} `json:"evolves_to"`
+			} `json:"evolves_to"`
+		} `json:"chain"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil, err
+	}
+
+	// Ajouter le premier Pokémon (base) à la liste des évolutions
+	evolutions = append(evolutions, data.Chain.EvolvesTo[0].Species.Name)
+
+	// Parcourir la chaîne d'évolution et ajouter chaque évolution
+	for _, evolution := range data.Chain.EvolvesTo {
+		if len(evolution.EvolvesTo) > 0 {
+			evolutions = append(evolutions, evolution.EvolvesTo[0].Species.Name)
+		}
+	}
+
+	return evolutions, nil
+}
+
+func FetchTypeDamageRelations(typeName string) (DamageRelations, error) {
+	url := fmt.Sprintf("https://pokeapi.co/api/v2/type/%s", typeName)
+	resp, err := http.Get(url)
+	if err != nil {
+		return DamageRelations{}, err
+	}
+	defer resp.Body.Close()
+
+	var damageRelations DamageRelations
+	if err := json.NewDecoder(resp.Body).Decode(&damageRelations); err != nil {
+		return DamageRelations{}, err
+	}
+
+	return damageRelations, nil
 }
