@@ -1,23 +1,46 @@
 {{define "filtrer"}}
 <!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <title> API </title>
+</head>
+<header class="header-container">
+    <div class="header-left">
+        <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+    </div>
+    <div class="header-middle">
+        <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+    </div>
+    <div class="header-right">
+        <div class="search">
+            <form action="/search" method="get" class="search-form">
+                <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                <button type="submit" class="searchButton">
+                    <img class="pokesearch" src="../static/img/pokesearch.png">
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
 <body>
-    <div class="father-container">
-        <!-- Formulaire de filtrage -->
-        <form action="/filterPokemonParType" method="post" class="filter-form">
-            <h2 class="filter-title">Filtrer par Type de Pokémon</h2>
-            <div class="filter-options">
-                {{range .Types}}
-                <label class="filter-option">
-                    <input type="checkbox" name="types" value="{{.}}"> {{.}}
-                </label>
+    <div class="container">
+        <h1>Filtrer Pokémon par Type</h1>
+        <form action="/filtrer" method="post">
+            
+        <div class="results">
+            {{if .Data.AllGenerations.Pokemons}}
+                <h2>Résultats:</h2>
+                {{range .Data.AllGenerations.Pokemons}}
+                <div class="pokemon">
+                    <p>Nom: {{.Data.AllGenerations.Name}}</p>
+                    <img src="{{.Image}}" alt="Image de {{.Name}}">
+                </div>
                 {{end}}
-            </div>
-            <button type="submit" class="filter-submit">Appliquer le Filtre</button>
-        </form>
-        <!-- La section existante pour afficher les Pokémon -->
-        <section id="pokemon-container">
-            <!-- Les Pokémon s'affichent ici -->
-        </section>
+            {{else}}
+                <p>Aucun Pokémon trouvé.</p>
+            {{end}}
+        </div>
     </div>
 </body>
 <html>
