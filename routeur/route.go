@@ -11,7 +11,7 @@ func InitRoute() {
 	http.HandleFunc("/", controller.Index)
 	http.HandleFunc("/search", controller.SearchPokemon)
 	http.HandleFunc("/pokemon/", controller.PokemonDetailHandler)
-	http.HandleFunc("/filtrer", controller.FilterHandler)
+	http.HandleFunc("/filtrerType", controller.FiltrerTypeHandler)
 
 	rootDoc, _ := os.Getwd()
 	fileserver := http.FileServer(http.Dir(rootDoc + "/assets"))

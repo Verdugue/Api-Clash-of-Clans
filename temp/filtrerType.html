@@ -1,0 +1,17 @@
+{{define "filtrerType"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats de recherche</title>
+</head>
+<body>
+    <h1>Choisissez un type de Pokémon</h1>
+    <form action="/filtrerType" method="post">
+        <input type="radio" id="normal" name="type" value="normal">
+        <label for="normal">Normal</label><br>
+        <button type="submit">Recherche</button>
+    </form>
+</body>
+</html>
+{{end}}
