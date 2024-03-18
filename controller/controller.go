@@ -13,14 +13,6 @@ import (
 )
 
 var AllPokemonTypes []string
-var id int
-var height int
-var weight int
-var name string
-var types []string
-var abilities []Ability
-var image string
-var err error
 
 type PokemonTypeResponse struct {
 	Name    string `json:"name"`
@@ -122,12 +114,15 @@ type TypeRelation struct {
 	URL  string `json:"url"`
 }
 
-func ToLower(str string) string {
-	return strings.ToLower(str)
+type TypesResponse struct {
+	Results []struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"results"`
 }
 
-func init() {
-	// Initialisation de AllPokemonTypes au démarrage de l'application.
+func ToLower(str string) string {
+	return strings.ToLower(str)
 }
 
 type TestTempResult struct {
@@ -380,15 +375,31 @@ func FetchTypeDamageRelations(typeName string) (DamageRelations, error) {
 }
 
 func FiltrerTypeHandler(w http.ResponseWriter, r *http.Request) {
-
-	typeName := r.FormValue("type")
-	pokemons, err := FetchPokemonsByType(typeName)
+	// Ici, tu récupères les types pour les passer au template.
+	types, err := FetchPokemonTypes()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	InitTemp.Temp.ExecuteTemplate(w, "filtrerType", pokemons)
+	data := struct {
+		Types    []string
+		Pokemons []string
+	}{
+		Types: types,
+	}
+
+	if r.Method == "POST" {
+		typeName := r.FormValue("type")
+		pokemons, err := FetchPokemonsByType(typeName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data.Pokemons = pokemons
+	}
+
+	InitTemp.Temp.ExecuteTemplate(w, "filtrerType", data)
 }
 
 func FetchPokemonsByType(typeName string) ([]string, error) {
@@ -410,9 +421,38 @@ func FetchPokemonsByType(typeName string) ([]string, error) {
 	}
 
 	var names []string
-	for _, p := range response.Pokemon {
+	for i, p := range response.Pokemon {
+		if i >= 20 { // Limite à 20 Pokémon
+			break
+		}
 		names = append(names, p.Pokemon.Name)
 	}
 
 	return names, nil
+}
+
+func FetchPokemonTypes() ([]string, error) {
+	url := "https://pokeapi.co/api/v2/type/"
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var response TypesResponse
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(body, &response); err != nil {
+		return nil, err
+	}
+
+	var types []string
+	for _, t := range response.Results {
+		types = append(types, t.Name)
+	}
+
+	return types, nil
 }

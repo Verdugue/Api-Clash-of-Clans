@@ -17,6 +17,32 @@
     
     }
     
+    .stat {
+        display:flex;
+        justify-content:center;
+        justify-content:space-evenly;
+        
+    }
+    
+    .stat-poke {
+        width:50px;
+        margin-right:-60px;
+        color:white;
+        
+    }
+    .stat-poke2 {
+        width:90px;
+        margin-right:-90px;
+         color:white;
+        
+    }
+    
+    .text-stat {
+        align-content:center;
+        display:flex;
+         color:white;
+    }
+    
     .logo-site{
       margin-left:40px;
       margin-top:20px;

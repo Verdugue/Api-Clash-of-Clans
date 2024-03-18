@@ -4,14 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Résultats de recherche</title>
+    <link rel="stylesheet" href="../static/css/filtrer.css">
 </head>
+<header class="header-container">
+    <div class="header-left">
+        <a href="/"><img class="logo-site" src="../static/img/pokeapi.png" alt="Logo"></a>
+    </div>
+    <div class="header-middle">
+        <img class="pikapika" src="../static/img/logo.png" alt="Pikachu">
+    </div>
+    <div class="header-right">
+        <div class="search">
+            <form action="/search" method="get" class="search-form">
+                <input type="text" class="searchTerm" name="query" placeholder="What are you looking for?">
+                <button type="submit" class="searchButton">
+                    <img class="pokesearch" src="../static/img/pokesearch.png">
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
 <body>
     <h1>Choisissez un type de Pokémon</h1>
     <form action="/filtrerType" method="post">
-        <input type="radio" id="normal" name="type" value="normal">
-        <label for="normal">Normal</label><br>
+        {{range .Types}}
+        <input type="radio" id="{{.}}" name="type" value="{{.}}">
+        <label for="{{.}}">{{.}}</label><br>
+        {{end}}
         <button type="submit">Recherche</button>
     </form>
+    {{if .Pokemons}}
+    <h2>Résultats :</h2>
+    <ul>
+        {{range .Pokemons}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+    {{end}}
 </body>
 </html>
 {{end}}

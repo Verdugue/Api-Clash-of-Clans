@@ -49,22 +49,19 @@
                         <a href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
                     {{end}}
                     </div>
-                    {{.Height}}
-                    {{.Weight}}
+                    
                     
                     
                     <select class="attack-list" name="abilities" id="abilities-dropdown">
                         {{range .Abilities}}
-                            <option value="Attaques">Attaques</option>
                             <option value="{{.Name}}">{{.Name}}</option>
                         {{end}}
                     </select>
-
-                   
-                    
-                    
-                    
                 </div>
+                <div class="stat">
+                    <img class="stat-poke" src="../static/img/taille.png"><p div="text-stat">{{.Height}} dm</p>
+                    <img class="stat-poke2" src="../static/img/poid.png"><p div="text-stat"> {{.Weight}} Hg</p>
+                    </div>
             </div>
         </div>
     </div>

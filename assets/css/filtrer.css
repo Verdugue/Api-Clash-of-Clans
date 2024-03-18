@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'MaFont';
+    src: url('/static/font/pokemonsolid.ttf');
+  }
+  
+  body {
+    background-color: #FFCB09;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  header {
+    background-color:#3466AF;
+    height:150px;
+    margin-top:-10px;
+    margin-right:-0px;
+    margin-left:-10px;
+    
+    
+  }
+  
+  
+  .header-container {
+    justify-content: space-between;
+    display: flex;
+  }
+  
+  .logo-site {
+    margin-left: 40px;
+    margin-top: 20px;
+    width: 250px;    
+  }
+  
+  .header-middle {
+    width: 160px;
+    margin-right: -50px;
+  }
+  
+  .pikapika {
+    width: 140px;
+    margin-right: 100px;
+  }
+  
+  .search {
+    display: flex;
+    width: 400px;
+    position: relative;
+    margin-top: 50px;
+    margin-right: 10px;
+  }
+  
+  .search-form {
+    width: 600px;
+    display: flex;
+    margin-bottom: 0px;
+  }
+  
+  .searchTerm {
+    width: 70%;
+    border: 3px solid #ffffff;
+    border-right: none;
+    padding: 5px;
+    height: 35px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: #9DBFAF;
+  }
+  
+  .searchTerm:focus {
+    color: #00B4CC;
+  }
+  
+  .searchButton {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    border: 1px solid #00B4CC;
+    background: #00B4CC;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  .searchButton:hover {
+    background-image: url("/static/img/pokeball.gif");
+  }
+  
+  .pokesearch {
+    width: 30px;
+    margin-top: 6px;
+  }
+  
