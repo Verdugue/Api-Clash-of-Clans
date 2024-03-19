@@ -26,14 +26,20 @@
     </header>
     <body>
         <div class="father-container">
+            
             <form class="generate" action="/" method="get">
+                
                 <div class="all-container">
+                    <div class="all">
                         <button class="genrate-style" type="submit">
                             <img class="fleche" src="../static/img/fleche.png" alt="fleche" />
                             Générer 20 nouveaux Pokémon
                         </button>
                     </form>
-                    <a href="/filtrerType" class="button-like">Filtrer</a>
+                        <button class="genrate-style3" type="submit">
+                            <a href="/filtrerType" class="genrate-style2">Filtrer par type.</a>
+                        </button>
+                </div>
                     <section id="pokemon-container">
                         {{ range . }}
                         <div>
@@ -56,10 +62,15 @@
                 </div>
         </div>
         
-    <footer  class="footer-container">
         
-
-    </footer>
-
+        <footer class="site-footer">
+            <div class="footer-left">
+                <p>eliott°ink</p>
+            </div>
+            <div class="footer-right">
+                <a href="/mentions-legales">Mentions légales</a>
+                <a href="/travail">Travail</a>
+            </div>
+        </footer>
 </html>
 {{end}}

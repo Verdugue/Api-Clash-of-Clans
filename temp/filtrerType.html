@@ -27,16 +27,20 @@
 <body>
     <h1>Choisissez un type de Pokémon</h1>
     <div class="container">
-        <form class="form-type" action="/filtrerType" method="post">
-          {{range .Type}}
-          <div class="type-option"> <!-- conteneur pour chaque option -->
-            <input type="radio" class="bouton-type" id="type-{{.}}" name="type" value="{{.}}">
-            <label class="text-type" for="type-option">{{.}}</label>
-          </div>
-          {{end}}
-          <button class="submit" type="submit">Recherche</button>
-        </form>
-      </div>    
+        <div class="container2">
+            <form class="form-type" action="/filtrerType" method="post">
+            {{range .Type}}
+                <div class="type-option"> <!-- conteneur pour chaque option -->
+                    <input type="radio" class="bouton-type" id="type-{{.}}" name="type" value="{{.}}">
+                    <label class="text-type" for="type-option">{{.}}</label>
+                </div>
+            {{end}}
+        </div>
+    <button class="submit" type="submit">Recherche</button>
+</div>   
+            
+            </form>
+         
       {{if .Pokemons}}
       <h2>Résultats :</h2>
       

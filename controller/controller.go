@@ -391,13 +391,12 @@ func FiltrerTypeHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		typeName := r.FormValue("type")
-		fmt.Printf("Type choisi : %s\n", typeName) // Log pour débogage
 		pokemons, err := FetchPokemonsByType(typeName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("Pokémons trouvés : %v\n", pokemons) // Log pour débogage
+
 		data.Pokemons = pokemons
 	}
 

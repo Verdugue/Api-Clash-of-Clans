@@ -3,6 +3,23 @@
   src: url('/static/font/pokemonsolid.ttf');
 }
 
+h1 {
+   display:flex;
+  justify-content: center;
+  font-family: Karma   ;
+  font-size:40px;
+  
+}
+
+h2 {
+   display:flex;
+   font-size:40px;
+  font-family: Angkor ;
+  margin-top:60px;
+  justify-content: center;
+  
+}
+
 body {
   background-color: #FFCB09;
   font-family: 'Open Sans', sans-serif;
@@ -14,8 +31,6 @@ header {
   margin-top:-10px;
   margin-right:-0px;
   margin-left:-10px;
-  
-  
 }
 
 
@@ -57,16 +72,6 @@ header {
   margin-bottom: 0px;
 }
 
-.container {
-  display: flex;
-  justify-content:center;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
-    grid-auto-rows: minmax(100px, auto);
-
-  
-}
-
 
 
 
@@ -99,11 +104,10 @@ header {
 
 .form-type {
   display: grid;
-  justify-content:center;
-  grid-template-columns: repeat(6, 2fr);
-  grid-gap: 10px;
+  grid-template-columns: repeat(5, 2fr);
+  grid-gap: 30px;
   grid-auto-rows: minmax(100px, auto);
-  
+
 }
 
 .searchButton:hover {
@@ -117,9 +121,27 @@ header {
 
 .container {
   margin-top:5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size:20px;
   font-family: 'MaFont', sans-serif;
   letter-spacing:2px;
+}
+
+.submit {
+   width:100px;
+  justify-content:center;
+  height:50px;
+  border-radius: 10px;
+  
+}
+
+.submit:hover {
+ transform: scale(1.2);
+  background-color: #939393;
+  
+  
 }
 
 .bouton-type {
@@ -133,57 +155,55 @@ header {
 }
 
 
-.pokemon-bal {
-  background-color: #F0E68C; /* Couleur de fond de chaque carte */
-  border-radius: 10px; /* Bords arrondis */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet 3D */
-  margin-bottom: 1rem; /* Espace en dessous de chaque carte */
-  text-align: center; /* Centre le contenu textuellement */
-  overflow: hidden; /* Empêche le débordement du contenu */
+#pokemon-container {
+  
+  width:1405px;
+  display: grid;
+  
+  margin-top:545px;
+  grid-template-columns: repeat(5, 1fr); /* Crée une grille avec 5 colonnes */
+  grid-auto-rows: minmax(100px, auto); /* Définit la hauteur minimale de la ligne, mais permet d'être plus grand si nécessaire */
+  gap: 3em; /* Espace entre les cartes */
+  padding: 1em; /* Espace autour de la grille */
+
+  margin: 0 auto; /* Centre le conteneur */
 }
 
-/* Ajustement de la taille des images pour qu'elles rentrent dans les cartes */
-.pokemon-image img {
-  max-width: 100%;
-  height: auto;
-  display: block; /* Empêche les marges par défaut des images en ligne */
+.pokemon-card {
+  display: flex;
+  border-bottom: 3px solid grey;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-top:50px;
+  padding: 1em;
+  /* Ajoutez d'autres styles selon vos besoins */
 }
 
-/* Style des noms de Pokémon */
-.pokemon-name {
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #333;
+.image-pokemon {
+  margin-left:15px;
+  width: 60%; /* Adaptez la largeur de l'image à celle du conteneur */
+  max-width: 150px; /* Définit une largeur maximale pour l'image */
+  margin-bottom: 1em; /* Espace entre l'image et le nom du Pokémon */
 }
 
-/* Style des icônes de type de Pokémon */
-.pokemon-type img {
-  width: 30px; /* Fixe une taille spécifique pour les icônes de type */
-  height: 30px;
-  margin: 0.5rem; /* Espacement autour des icônes */
+
+
+.pokemon-name{
+  text-decoration: none;
+  font-family:'MaFont';
+  letter-spacing: 3px;
+  text-align:center;
+  font-size:20px;
+  margin-bottom: 0.5em;
 }
 
-/* Media queries pour une disposition réactive */
-@media (max-width: 1200px) {
-  #pokemon-container {
-    grid-template-columns: repeat(4, 1fr); /* 4 colonnes sur les écrans plus petits */
-  }
+.type {
+   width:70px;
+  
 }
 
-@media (max-width: 900px) {
-  #pokemon-container {
-    grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur les écrans de taille moyenne */
-  }
-}
-
-@media (max-width: 600px) {
-  #pokemon-container {
-    grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur les écrans plus étroits */
-  }
-}
-
-@media (max-width: 400px) {
-  #pokemon-container {
-    grid-template-columns: 1fr; /* 1 colonne pour les petits appareils mobiles */
-  }
+.pokemon-type {
+  margin-bottom: 0.5em; /* Espace entre les types et le bas de la carte */
 }
