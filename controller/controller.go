@@ -383,26 +383,29 @@ func FiltrerTypeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Types    []string
-		Pokemons []string
+		Type     []string
+		Pokemons []Pokemon // Change ici pour utiliser []Pokemon au lieu de []string
 	}{
-		Types: types,
+		Type: types,
 	}
 
 	if r.Method == "POST" {
 		typeName := r.FormValue("type")
+		fmt.Printf("Type choisi : %s\n", typeName) // Log pour débogage
 		pokemons, err := FetchPokemonsByType(typeName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		fmt.Printf("Pokémons trouvés : %v\n", pokemons) // Log pour débogage
 		data.Pokemons = pokemons
 	}
 
 	InitTemp.Temp.ExecuteTemplate(w, "filtrerType", data)
 }
 
-func FetchPokemonsByType(typeName string) ([]string, error) {
+func FetchPokemonsByType(typeName string) ([]Pokemon, error) {
+	// Appelle l'API pour obtenir tous les Pokémon d'un certain type
 	url := "https://pokeapi.co/api/v2/type/" + typeName
 	resp, err := http.Get(url)
 	if err != nil {
@@ -415,20 +418,42 @@ func FetchPokemonsByType(typeName string) ([]string, error) {
 		return nil, err
 	}
 
-	var response PokemonTypeResponse
-	if err := json.Unmarshal(body, &response); err != nil {
+	var typeResp struct {
+		Pokemon []struct {
+			Pokemon struct {
+				Name string `json:"name"`
+				URL  string `json:"url"`
+			} `json:"pokemon"`
+		} `json:"pokemon"`
+	}
+	if err := json.Unmarshal(body, &typeResp); err != nil {
 		return nil, err
 	}
 
-	var names []string
-	for i, p := range response.Pokemon {
+	var pokemons []Pokemon
+	for i, p := range typeResp.Pokemon {
 		if i >= 20 { // Limite à 20 Pokémon
 			break
 		}
-		names = append(names, p.Pokemon.Name)
+		// Utilise l'URL de chaque Pokémon pour obtenir des détails supplémentaires
+		id, locationAreaEncounters, height, weight, name, types, abilities, image, err := FetchPokemonDetails(p.Pokemon.URL)
+		if err != nil {
+			// Gérer l'erreur ou continuer avec le prochain Pokémon
+			continue
+		}
+		pokemons = append(pokemons, Pokemon{
+			ID:                     id,
+			LocationAreaEncounters: locationAreaEncounters,
+			Height:                 height,
+			Weight:                 weight,
+			Name:                   name,
+			Type:                   types,
+			Abilities:              abilities,
+			Image:                  image,
+		})
 	}
 
-	return names, nil
+	return pokemons, nil
 }
 
 func FetchPokemonTypes() ([]string, error) {

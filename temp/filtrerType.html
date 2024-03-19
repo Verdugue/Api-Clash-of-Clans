@@ -26,20 +26,39 @@
 </header>
 <body>
     <h1>Choisissez un type de Pokémon</h1>
-    <form action="/filtrerType" method="post">
-        {{range .Types}}
-        <input type="radio" id="{{.}}" name="type" value="{{.}}">
-        <label for="{{.}}">{{.}}</label><br>
-        {{end}}
-        <button type="submit">Recherche</button>
-    </form>
-    {{if .Pokemons}}
-    <h2>Résultats :</h2>
-    <ul>
-        {{range .Pokemons}}
-        <li>{{.}}</li>
-        {{end}}
-    </ul>
+    <div class="container">
+        <form class="form-type" action="/filtrerType" method="post">
+          {{range .Type}}
+          <div class="type-option"> <!-- conteneur pour chaque option -->
+            <input type="radio" class="bouton-type" id="type-{{.}}" name="type" value="{{.}}">
+            <label class="text-type" for="type-option">{{.}}</label>
+          </div>
+          {{end}}
+          <button class="submit" type="submit">Recherche</button>
+        </form>
+      </div>    
+      {{if .Pokemons}}
+      <h2>Résultats :</h2>
+      
+      <section id="pokemon-container">
+        {{ range .Pokemons }}
+        <div>
+            <a href="/pokemon/{{.Name}}" class="pokemon-card-link">
+                <div class="pokemon-card">
+                    <div class="pokemon-image">
+                        <img src="{{.Image}}" alt="image de {{.Name}}" class="image-pokemon">
+                    </div>
+                    <div class="pokemon-name">{{.Name}}</div>
+                    <div class="pokemon-type">
+                        {{range .Type}}
+                        <a class="con" href="https://pokemon.fandom.com/wiki/{{.}}_type"> <img class="type"src="../static/img/{{.}}.png"  class="image-pokemon" alt="{{.}} type"></a>
+                        {{end}}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {{ end }}
+    </section>
     {{end}}
 </body>
 </html>

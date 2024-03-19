@@ -1,92 +1,189 @@
 @font-face {
-    font-family: 'MaFont';
-    src: url('/static/font/pokemonsolid.ttf');
-  }
-  
-  body {
-    background-color: #FFCB09;
-    font-family: 'Open Sans', sans-serif;
-  }
+  font-family: 'MaFont';
+  src: url('/static/font/pokemonsolid.ttf');
+}
 
-  header {
-    background-color:#3466AF;
-    height:150px;
-    margin-top:-10px;
-    margin-right:-0px;
-    margin-left:-10px;
-    
-    
+body {
+  background-color: #FFCB09;
+  font-family: 'Open Sans', sans-serif;
+}
+
+header {
+  background-color:#3466AF;
+  height:150px;
+  margin-top:-10px;
+  margin-right:-0px;
+  margin-left:-10px;
+  
+  
+}
+
+
+.header-container {
+  justify-content: space-between;
+  display: flex;
+}
+
+.logo-site {
+  margin-left: 40px;
+  margin-top: 20px;
+  width: 250px;    
+}
+
+.header-middle {
+  width: 160px;
+  margin-right: -50px;
+}
+
+.pikapika {
+  width: 140px;
+  margin-right: 100px;
+}
+
+
+.search {
+  display: flex;
+  width: 400px;
+  position: relative;
+  margin-top: 50px;
+  margin-right: 10px;
+}
+
+
+
+.search-form {
+  width: 600px;
+  display: flex;
+  margin-bottom: 0px;
+}
+
+.container {
+  display: flex;
+  justify-content:center;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+
+  
+}
+
+
+
+
+.searchTerm {
+  width: 70%;
+  border: 3px solid #ffffff;
+  border-right: none;
+  padding: 5px;
+  height: 35px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+}
+
+.searchTerm:focus {
+  color: #00B4CC;
+}
+
+.searchButton {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+  border: 1px solid #00B4CC;
+  background: #00B4CC;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.form-type {
+  display: grid;
+  justify-content:center;
+  grid-template-columns: repeat(6, 2fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+  
+}
+
+.searchButton:hover {
+  background-image: url("/static/img/pokeball.gif");
+}
+
+.pokesearch {
+  width: 30px;
+  margin-top: 6px;
+}
+
+.container {
+  margin-top:5em;
+  font-size:20px;
+  font-family: 'MaFont', sans-serif;
+  letter-spacing:2px;
+}
+
+.bouton-type {
+  height: 40px; /* Hauteur du bouton personnalisé */
+  width: 40px; /* Largeur du bouton personnalisé */
+  border-radius: 50%; /* Rend le bouton circulaire */
+  border: 3px solid #000000; /* Couleur de la bordure de ton choix */
+  background-color: white; /* Couleur de fond initiale */
+  vertical-align: middle; /* Pour aligner verticalement avec le texte si nécessaire */
+  cursor: pointer; /* Change le curseur pour indiquer un élément cliquable */
+}
+
+
+.pokemon-bal {
+  background-color: #F0E68C; /* Couleur de fond de chaque carte */
+  border-radius: 10px; /* Bords arrondis */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet 3D */
+  margin-bottom: 1rem; /* Espace en dessous de chaque carte */
+  text-align: center; /* Centre le contenu textuellement */
+  overflow: hidden; /* Empêche le débordement du contenu */
+}
+
+/* Ajustement de la taille des images pour qu'elles rentrent dans les cartes */
+.pokemon-image img {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Empêche les marges par défaut des images en ligne */
+}
+
+/* Style des noms de Pokémon */
+.pokemon-name {
+  margin: 0.5rem 0;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Style des icônes de type de Pokémon */
+.pokemon-type img {
+  width: 30px; /* Fixe une taille spécifique pour les icônes de type */
+  height: 30px;
+  margin: 0.5rem; /* Espacement autour des icônes */
+}
+
+/* Media queries pour une disposition réactive */
+@media (max-width: 1200px) {
+  #pokemon-container {
+    grid-template-columns: repeat(4, 1fr); /* 4 colonnes sur les écrans plus petits */
   }
-  
-  
-  .header-container {
-    justify-content: space-between;
-    display: flex;
+}
+
+@media (max-width: 900px) {
+  #pokemon-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur les écrans de taille moyenne */
   }
-  
-  .logo-site {
-    margin-left: 40px;
-    margin-top: 20px;
-    width: 250px;    
+}
+
+@media (max-width: 600px) {
+  #pokemon-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur les écrans plus étroits */
   }
-  
-  .header-middle {
-    width: 160px;
-    margin-right: -50px;
+}
+
+@media (max-width: 400px) {
+  #pokemon-container {
+    grid-template-columns: 1fr; /* 1 colonne pour les petits appareils mobiles */
   }
-  
-  .pikapika {
-    width: 140px;
-    margin-right: 100px;
-  }
-  
-  .search {
-    display: flex;
-    width: 400px;
-    position: relative;
-    margin-top: 50px;
-    margin-right: 10px;
-  }
-  
-  .search-form {
-    width: 600px;
-    display: flex;
-    margin-bottom: 0px;
-  }
-  
-  .searchTerm {
-    width: 70%;
-    border: 3px solid #ffffff;
-    border-right: none;
-    padding: 5px;
-    height: 35px;
-    border-radius: 5px 0 0 5px;
-    outline: none;
-    color: #9DBFAF;
-  }
-  
-  .searchTerm:focus {
-    color: #00B4CC;
-  }
-  
-  .searchButton {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 15px;
-    border: 1px solid #00B4CC;
-    background: #00B4CC;
-    color: #fff;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-    font-size: 20px;
-  }
-  
-  .searchButton:hover {
-    background-image: url("/static/img/pokeball.gif");
-  }
-  
-  .pokesearch {
-    width: 30px;
-    margin-top: 6px;
-  }
-  
+}
